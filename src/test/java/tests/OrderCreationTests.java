@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.hamcrest.Matchers.*;
+import static org.apache.http.HttpStatus.*;
 
 @RunWith(Parameterized.class)
 public class OrderCreationTests {
@@ -62,7 +63,7 @@ public class OrderCreationTests {
     @After
     public void tearDown() {
         if (accessToken != null) {
-            userService.deleteUser(accessToken).then().statusCode(202);
+            userService.deleteUser(accessToken).then().statusCode(SC_ACCEPTED);
         }
     }
 
@@ -74,12 +75,12 @@ public class OrderCreationTests {
 
         if (shouldSucceed) {
             response.then()
-                .statusCode(200)
+                .statusCode(SC_OK)
                 .body("success", equalTo(true))
                 .body("order.number", notNullValue());
         } else {
             response.then()
-                .statusCode(anyOf(is(400), is(403), is(500)));
+                .statusCode(anyOf(is(SC_BAD_REQUEST), is(SC_FORBIDDEN), is(SC_INTERNAL_SERVER_ERROR)));
 
             if (response.getContentType() != null && response.getContentType().contains("application/json")) {
                 Boolean success = response.jsonPath().get("success");

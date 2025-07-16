@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import service.UserService;
+import static org.apache.http.HttpStatus.*;
 
 import static org.hamcrest.Matchers.*;
 
@@ -27,7 +28,7 @@ public class UserLoginTests {
 
         Response response = userService.loginUser(user);
         response.then()
-            .statusCode(200)
+            .statusCode(SC_OK)
             .body("success", equalTo(true))
             .body("accessToken", not(emptyOrNullString()));
 
@@ -41,7 +42,7 @@ public class UserLoginTests {
 
         response
             .then()
-            .statusCode(401)
+            .statusCode(SC_UNAUTHORIZED)
             .body("success", equalTo(false))
             .body("message", containsString("email or password are incorrect"));
     }
@@ -55,7 +56,7 @@ public class UserLoginTests {
 
         response
             .then()
-            .statusCode(401)
+            .statusCode(SC_UNAUTHORIZED)
             .body("success", equalTo(false))
             .body("message", containsString("email or password are incorrect"));
 
@@ -67,7 +68,7 @@ public class UserLoginTests {
         if (accessToken != null) {
             userService.deleteUser(accessToken)
                 .then()
-                .statusCode(202);
+                .statusCode(SC_ACCEPTED);
         }
     }
 }

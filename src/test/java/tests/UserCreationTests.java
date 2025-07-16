@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import service.UserService;
+import static org.apache.http.HttpStatus.*;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -30,7 +31,7 @@ public class UserCreationTests {
         Response response = userService.createUser(email, "password123", faker.name().fullName());
 
         response.then()
-            .statusCode(200)
+            .statusCode(SC_OK)
             .body("success", equalTo(true))
             .body("user.email", equalTo(email.toLowerCase()));
 
@@ -45,13 +46,13 @@ public class UserCreationTests {
         Response response1 = userService.createUser(email, "password123", faker.name().fullName());
         response1
             .then()
-            .statusCode(200)
+            .statusCode(SC_OK)
             .body("success", equalTo(true));
 
         Response response2 = userService.createUser(email, "password123", faker.name().fullName());
         response2
             .then()
-            .statusCode(403)
+            .statusCode(SC_FORBIDDEN)
             .body("success", equalTo(false))
             .body("message", containsString("User already exists"));
     }
@@ -63,7 +64,7 @@ public class UserCreationTests {
 
         response
             .then()
-            .statusCode(403)
+            .statusCode(SC_FORBIDDEN)
             .body("success", equalTo(false))
             .body("message", containsString("Email, password and name are required fields"));
     }
@@ -75,7 +76,7 @@ public class UserCreationTests {
 
         response
             .then()
-            .statusCode(403)
+            .statusCode(SC_FORBIDDEN)
             .body("success", equalTo(false))
             .body("message", containsString("Email, password and name are required fields"));
     }
@@ -87,7 +88,7 @@ public class UserCreationTests {
 
         response
             .then()
-            .statusCode(403)
+            .statusCode(SC_FORBIDDEN)
             .body("success", equalTo(false))
             .body("message", containsString("Email, password and name are required fields"));
     }
@@ -97,7 +98,7 @@ public class UserCreationTests {
         if (accessToken != null) {
             userService.deleteUser(accessToken)
                 .then()
-                .statusCode(202);
+                .statusCode(SC_ACCEPTED);
         }
     }
 }
