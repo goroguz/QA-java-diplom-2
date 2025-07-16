@@ -2,7 +2,6 @@ package tests;
 
 import com.github.javafaker.Faker;
 import io.qameta.allure.Description;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
@@ -15,8 +14,8 @@ import service.UserService;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.hamcrest.Matchers.*;
 import static org.apache.http.HttpStatus.*;
+import static org.hamcrest.Matchers.*;
 
 @RunWith(Parameterized.class)
 public class OrderCreationTests {
@@ -51,7 +50,6 @@ public class OrderCreationTests {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "https://stellarburgers.nomoreparties.site";
         String email = faker.internet().emailAddress();
         String password = "password123";
         String name = faker.name().fullName();
