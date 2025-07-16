@@ -2,14 +2,12 @@ package tests;
 
 import com.github.javafaker.Faker;
 import io.qameta.allure.Description;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import service.UserService;
-import static org.apache.http.HttpStatus.*;
 
+import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -18,11 +16,6 @@ public class UserCreationTests {
     private String accessToken;
     private final UserService userService = new UserService();
     Faker faker = new Faker();
-
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = "https://stellarburgers.nomoreparties.site";
-    }
 
     @Test
     @Description("Создание уникального пользователя")
