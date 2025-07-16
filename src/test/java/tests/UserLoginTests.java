@@ -5,43 +5,52 @@ import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import model.User;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import service.UserService;
-import static org.apache.http.HttpStatus.*;
 
+import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.*;
 
-@RunWith(JUnit4.class)
 public class UserLoginTests {
 
-    private String accessToken;
     private final UserService userService = new UserService();
-    Faker faker = new Faker();
+    private final Faker faker = new Faker();
+
+    private User testUser;
+    private String accessToken;
+
+    @Before
+    public void setUp() {
+        testUser = new User(
+            faker.internet().emailAddress(),
+            "password123",
+            faker.name().fullName()
+        );
+        Response response = userService.createUser(testUser);
+        accessToken = response.then().extract().path("accessToken");
+    }
 
     @Test
     @Description("Успешный логин под существующим пользователем")
     public void loginWithValidCredentials() {
-        User user = new User(faker.internet().emailAddress(), "password123", faker.name().fullName());
-        userService.createUser(user);
-
-        Response response = userService.loginUser(user);
+        Response response = userService.loginUser(testUser);
         response.then()
             .statusCode(SC_OK)
             .body("success", equalTo(true))
             .body("accessToken", not(emptyOrNullString()));
-
-        accessToken = response.then().extract().path("accessToken");
     }
 
     @Test
     @Description("Логин с несуществующим логином")
     public void loginWithInvalidCredentials() {
-        Response response = userService.loginUser(faker.internet().emailAddress(), "password123", null);
+        Response response = userService.loginUser(
+            faker.internet().emailAddress(),
+            "password123",
+            null
+        );
 
-        response
-            .then()
+        response.then()
             .statusCode(SC_UNAUTHORIZED)
             .body("success", equalTo(false))
             .body("message", containsString("email or password are incorrect"));
@@ -49,18 +58,17 @@ public class UserLoginTests {
 
     @Test
     @Description("Логин с неверным паролем")
-    public void loginWithInvalidPassw() {
-        User user = new User(faker.internet().emailAddress(), "password123", faker.name().fullName());
-        Response createUserResponse = userService.createUser(user);
-        Response response = userService.loginUser(user.getEmail(), "wrongpass", user.getName());
+    public void loginWithInvalidPassword() {
+        Response response = userService.loginUser(
+            testUser.getEmail(),
+            "wrongpass",
+            testUser.getName()
+        );
 
-        response
-            .then()
+        response.then()
             .statusCode(SC_UNAUTHORIZED)
             .body("success", equalTo(false))
             .body("message", containsString("email or password are incorrect"));
-
-        accessToken = createUserResponse.then().extract().path("accessToken");
     }
 
     @After
