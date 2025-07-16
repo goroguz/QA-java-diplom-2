@@ -1,5 +1,6 @@
 package service;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import model.User;
 import util.RestAssuredConfig;
@@ -13,6 +14,7 @@ public class UserService {
         return createUser(user);
     }
 
+    @Step("Создание пользователя")
     public Response createUser(User user) {
         return  given()
             .header("Content-Type", "application/json")
@@ -22,6 +24,7 @@ public class UserService {
             .post("/api/auth/register");
     }
 
+    @Step("Удаление пользователя")
     public Response deleteUser(String accessToken) {
         return given()
             .header("Authorization", accessToken)
@@ -29,11 +32,13 @@ public class UserService {
             .delete("/api/auth/user");
     }
 
+    @Step("Логин пользователя")
     public Response loginUser(String email, String password, String name) {
         User user = new User(email, password, name);
         return loginUser(user);
     }
 
+    @Step("Логин пользователя")
     public Response loginUser(User user) {
         return given()
             .header("Content-Type", "application/json")

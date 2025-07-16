@@ -1,5 +1,6 @@
 package service;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import model.Order;
@@ -9,6 +10,7 @@ import static io.restassured.RestAssured.given;
 
 public class OrderService {
 
+    @Step("Создание заказа")
     public Response createOrder(String accessToken, String[] ingredientHashes) {
         RequestSpecification request = given()
             .header("Content-Type", "application/json")
@@ -22,6 +24,7 @@ public class OrderService {
         return request.when().post("/api/orders");
     }
 
+    @Step("Получение списка валидных хэшей ингредиентов")
     public String[] getValidIngredientHashes() {
         Response response = given()
             .spec(RestAssuredConfig.getBaseSpec())
