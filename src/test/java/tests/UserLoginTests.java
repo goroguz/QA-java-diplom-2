@@ -51,7 +51,7 @@ public class UserLoginTests {
     public void loginWithInvalidPassw() {
         User user = new User(faker.internet().emailAddress(), "password123", faker.name().fullName());
         Response createUserResponse = userService.createUser(user);
-        Response response = userService.loginUser(user.email, "wrongpass", user.name);
+        Response response = userService.loginUser(user.getEmail(), "wrongpass", user.getName());
 
         response
             .then()

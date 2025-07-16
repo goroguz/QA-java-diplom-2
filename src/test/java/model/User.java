@@ -1,13 +1,12 @@
 package model;
 
-public class User {
-    public String email;
-    public String password;
-    public String name;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-    public User(String email, String password, String name) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-    }
+@Data
+@AllArgsConstructor
+public class User {
+    private String email;
+    private String password;
+    private String name;
 }
